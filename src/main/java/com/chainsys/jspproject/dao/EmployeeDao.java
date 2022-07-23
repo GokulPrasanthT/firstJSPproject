@@ -252,7 +252,7 @@ public  class EmployeeDao {
 	}
 	//To retrieve all employee data 
 	 public static List<Employee> getAllEmployee(){
-		 List<Employee> listOfEmployees = new ArrayList<Employee>();//ok sir
+		 List<Employee> listOfEmployees = new ArrayList<Employee>();
 		 Employee emp =null;
 			String selectquery = "select EMPLOYEE_ID,FIRST_NAME,LAST_NAME,EMAIL,HIRE_DATE,JOB_ID,SALARY  from Employees ";
 			Connection con = null;

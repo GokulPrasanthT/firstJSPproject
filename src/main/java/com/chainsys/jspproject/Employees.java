@@ -5,9 +5,10 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import com.chainsys.jspproject.pojo.Employee;
 @WebServlet("/Employees")
 public class Employees extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ServletResponse response;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -41,44 +43,12 @@ public class Employees extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		PrintWriter out = response.getWriter();
-		List<Employee> allEmployees = EmployeeDao.getAllEmployee();
-		Iterator<Employee> empIterator = allEmployees.iterator();
-//		while (empIterator.hasNext()) {
-//			Employee result = empIterator.next();
-////			out.println("Employee id: " + "\t" + "Employee first name: " + "\t" + "Employee last name: " + "\t"
-////					+ "Employee email: " + "\t" + "Employee hiredate: " + "\t" + "Employee job id: " + "\t"
-////					+ "Employee salary: " + "\t");
-//			out.println("</hr>");
-//			out.println(result.getEmp_ID() + "</p>" + result.getFirst_name() + "</p>" + result.getLast_name() + "</p>"
-//					+ result.getEmail() + "</p>" + result.getHire_date() + "</p>" + result.getJob_id() + "</p>"
-//					+ result.getSalary());
-
-		response.setContentType("text/html");
-		out.print("<html><head><title><Employees</title></head><body>");
-		out.print("<table border=1px bgcolor=\"DodgerBlue\" width=50%>");
-		out.print("<tr bgcolor=\"Yellow\" align=center>");
-		out.print("<th height=\"10\" width=\"90\">Emp_id:</th>");
-		out.print("<th height=\"10\" width=\"90\">First_name:</th>");
-		out.print("<th height=\"10\" width=\"90\">Last_name:</th>");
-		while (empIterator.hasNext()) {
-			out.print("<tr align=center>");
-			Employee emp = empIterator.next();
-			out.print("<td bgcolor=\"LiteYellow\">" + emp.getEmp_ID() + "</td>");
-			out.print("<td bgcolor=\"LiteYellow\">" + emp.getFirst_name() + "</td>");
-			out.print("<td bgcolor=\"LiteYellow\">" + emp.getLast_name() + "</td>");
-			out.print("</tr>");
-//			out.println("emp id:"+emp.getEmployee_id()+","+emp.getFirst_name()+","+
-//					emp.getLast_name()+",");
-			out.print("</body></html>");
-		}
+		List<Employee> allEmployee = EmployeeDao.getAllEmployee();
+		request.setAttribute("emplist", allEmployee);
+		RequestDispatcher rd = request.getRequestDispatcher("/ViewEmp.jsp");
+		rd.forward(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		if (request.getParameter("click").equals("ADD EMPLOYEE")) {
@@ -158,7 +128,7 @@ public class Employees extends HttpServlet {
 				newemp.setEmail(email);
 //--------------------------------------			
 				SimpleDateFormat hire_dateFormate = new SimpleDateFormat("dd/MM/yyyy");
-				String emp_HireDate = request.getParameter("date");
+				String emp_HireDate = request.getParameter("hdate");
 				// Date hire_date=hire_dateFormate.parse(emp_HireDate);
 
 				try {
@@ -214,14 +184,17 @@ public class Employees extends HttpServlet {
 				}
 				newemp.setSalary(salParse);
 //--------------------------------------------------------			
-				result = EmployeeDao.insertEmployee(newemp);
+				// result = EmployeeDao.insertEmployee(newemp);
 			} catch (Exception e) {
 				message += "Message: " + e.getMessage();
 				String errorPage = ExceptionManager.handleException(e, source, message);
 				out.print(errorPage);
 				return;
 			}
-			out.println("<div> ADD Employee: " + result + "</div>");
+			result = EmployeeDao.insertEmployee(newemp);
+			request.setAttribute("addemp", result);
+			RequestDispatcher rd = request.getRequestDispatcher("/AddEmployee.jsp");
+			rd.forward(request, response);
 		} else if (request.getParameter("click").equals("Update EMPLOYEE")) {
 			doPut(request, response);
 		} else if (request.getParameter("click").equals("Delete Employee")) {
@@ -347,7 +320,9 @@ public class Employees extends HttpServlet {
 			out.println("Error in some input data :" + e.getMessage());
 		} finally {
 		}
-		out.println("<div> Update Employee: " + result + "</div>");
+		request.setAttribute("modifyemp", result);
+		RequestDispatcher rd = request.getRequestDispatcher("ModifyEmployee.jsp");
+		rd.forward(request, response);
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
@@ -371,7 +346,9 @@ public class Employees extends HttpServlet {
 				}
 				newemp.setEmp_ID(empId);
 				int result = EmployeeDao.deleteEmployee(empId);
-				out.println("<div> Delete Employee: " + result + "</div>");
+				request.setAttribute("modifyemp", result);
+				RequestDispatcher rd = request.getRequestDispatcher("Delemp.jsp");
+				rd.forward(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

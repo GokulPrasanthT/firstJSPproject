@@ -7,11 +7,19 @@
 <title>Inex</title>
 </head>
 <body>
-<h1>Welcome To JSP</h1>
-<div><a href="addemp.jsp">Add New Employee</a></div>
-<div><a href="modifyemp.jsp">Update Employee</a></div>
-<div><a href="DeleteEmp.jsp">Delete Employee</a></div>
-<div><a href="Employees">View All Employees</a></div>
-
+	<div style="width: 50%; margin: 0 auto">
+		<h1>Welcome</h1>
+		<h2> Welcome My Web Page</h2>
+		<div>
+			<a href="/firstJSPproject/addemp.jsp">Add Employee</a>
+		</div>
+		 <div>
+			<a href="/firstJSPproject/modifyemp.jsp">Update Employee</a>
+		</div>
+		 <div>
+			<a href="/firstJSPproject/DeleteEmp.jsp">Delete Employee</a>
+		</div>
+		
+	</div>
 </body>
 </html>

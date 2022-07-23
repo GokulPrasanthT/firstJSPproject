@@ -8,7 +8,7 @@
 </head>
 <body>
 <body>
-	<form action="Employees" method="post">
+	<form action="UpdateEmployee" method="post">
 		<!--need to mention method = post  -->
 		<center>
 			<div>
